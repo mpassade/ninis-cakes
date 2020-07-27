@@ -1,0 +1,10 @@
+{
+  "lambda": {
+    "role": "ninis-cakes-executor",
+    "name": "ninis-cakes",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "98b2qvmhle"
+  }
+}

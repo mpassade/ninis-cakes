@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="account-info">
+        <%- include('../partials/success') %>
+        <header>Profile</header>
+        <div class="profile">
+            <input type="text" class="inputs" name="firstName" value="<%=user.firstName%>" readonly>
+            <input type="text" class="inputs" name="lastName" value="<%=user.lastName%>" readonly>
+            <input type="email" class="inputs" name="email" value="<%=user.email%>" readonly>
+        </div>
+        <div class="profile-btns">
+            <a href="/edit-profile/<%=user._id%>"><button class="edit-btn">Edit</button></a>
+            <a href="/change-password/<%=user._id%>"><button class="change-pwd-btn">Change Password</button></a>
+        </div>
+        <button class="delete-btn">Delete</button>
+        <div class="delete-modal-content" style="display: none;">
+            <span>Are you sure you want to delete your account? This action cannot be undone.</span>
+            <div>
+                <form action="/delete-user/<%=user._id%>?_method=DELETE" method="POST"><button id="delete" type="submit">Delete Account</button></form>
+                <button id="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

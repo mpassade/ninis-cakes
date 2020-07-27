@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="quote">
+        <%- include('../partials/errors') %>
+        <form action="/request-quote/<%=user._id%>" method="POST">
+            <div class="quote-info">
+                <div class="quote-info-container">
+                    <label for="name" class="quote-label">Name:</label>
+                    <input class="quote-input" type="text" name="name" value="<%=user.firstName%> <%=user.lastName%>">
+                </div>
+                <div class="quote-info-container">
+                    <label for="email" class="quote-label">Email:</label>
+                    <input class="quote-input" type="email" name="email" value="<%=user.email%>">
+                </div>
+                <div class="quote-info-container">
+                    <label for="number" class="quote-label">Phone #</label>
+                    <input class="quote-input" type="text" name="number">
+                </div>
+                <div class="quote-info-container">
+                    <label for="type" class="quote-label">Type:</label>
+                    <select name="type" class="dropdown">
+                        <option disabled selected></option>
+                        <option value="vanilla">Vanilla</option>
+                        <option value="chocolate">Chocolate</option>
+                        <option value="red velvet">Red Velvet</option>
+                    </select>
+                </div>
+                <div class="quote-info-container">
+                    <label for="frosting" class="quote-label">Frosting:</label>
+                    <select name="frosting" class="dropdown">
+                        <option disabled selected></option>
+                        <option value="buttercream">Buttercream</option>
+                        <option value="creamcheese">Cream-Cheese</option>
+                    </select>
+                </div>
+                <div class="quote-info-container">
+                    <label for="tiers" class="quote-label">Tiers:</label>
+                    <select name="tiers" class="tiers dropdown">
+                        <option disabled selected></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </div>
+                <div class="quote-info-container">
+                    <label for="color" class="quote-label">Color</label>
+                    <input class="quote-input" type="text" name="color">
+                </div>
+                <div class="quote-info-container">
+                    <label for="theme" class="quote-label">Theme</label>
+                    <input class="quote-input" type="text" name="theme">
+                </div>
+                <div class="quote-info-container">
+                    <label for="feeds" class="quote-label">Feeds:</label>
+                    <select name="feeds" class="dropdown">
+                        <option disabled selected></option>
+                        <option value="2-4 people">2-4 people</option>
+                        <option value="5-7 people">5-7 people</option>
+                        <option value="8-10 people">8-10 people</option>
+                        <option value="11-15 people">11-15 people</option>
+                        <option value="16-20 people">16-20 people</option>
+                        <option value="Over 20 people">Over 20 people</option>
+                    </select>
+                </div>
+                <div class="quote-info-container">
+                    <label class="quote-label">Extras:</label>
+                    <div class="checkbox-container">
+                        <div>
+                            <input class="quote-input checkbox" type="checkbox" name="macarons">
+                            <label for="macarons" class="checkbox">Macarons</label>
+                        </div>
+                        <div>
+                            <input class="quote-input checkbox" type="checkbox" name="cookies">
+                            <label for="cookies" class="checkbox">Cookies</label>
+                        </div>
+                        <div>
+                            <input class="quote-input checkbox" type="checkbox" name="cupcakes">
+                            <label for="cupcakes" class="checkbox">Cupcakes</label>                           
+                        </div>
+                    </div>
+                </div>
+                <div class="quote-info-container">
+                    <label for="date" class="quote-label">Needed:</label>
+                    <input class="quote-input date" type="date" name="date">
+                </div>
+                <div class="txtarea-container">
+                    <label for="comments">Additional Comments:</label>
+                    <textarea name="comments"></textarea>
+                </div>
+            </div>
+            <button class="quote-btn" type="submit">Request Quote</button>
+        </form>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

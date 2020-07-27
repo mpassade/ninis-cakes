@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="cakes">
+        <% cakes.sort((a,b) => a.order - b.order) %>
+        <% for( let i = 0; i < cakes.length; i++ ) { %>
+            <div class="cake">
+                <% let name = cakes[i].name.toLowerCase().split(" ").join("") %>
+                <img class="cake-img <%=name%>" src=<%=cakes[i].image%>>
+                <header class="cake-name <%=name%>"><%=cakes[i].name%></header>
+                <div class="cake-modal-content <%=name%>-content" style="display: none;">
+                    <header><%=cakes[i].name%></header>
+                    <div class="cake-info">
+                        <img src=<%=cakes[i].image%>>
+                        <span><%=cakes[i].description%></span>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<div class="navbar">
+    <div class="dropdown-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <div class="overlay" style="display: none;"></div>
+    <div class="dropdown-content">
+        <div>
+            <% if (authenticated) { %>
+                <span><a href="/profile">Profile</a></span>
+            <% } else { %>
+                <span><a href="/login">Login</a> / <a href="/register">Register</a></span>
+            <% } %>
+        </div>
+        <div><a href="/">Home</a></div>
+        <div><a href="/about">About</a></div>
+        <div><a href="/quote">Request a Quote</a></div>
+        <div><a href="/contact">Contact Us</a></div>
+        <% if (authenticated) { %>
+            <div><span><a href="/logout">Logout</a></span></div>
+        <% } %>
+    </div>
+    <% if (authenticated) { %>
+        <span>Hi <a href="/profile"><%=user.firstName%></a> | <a href="/logout">Logout</a></span>
+    <% } else { %>
+        <span><a href="/login">Login</a> / <a href="/register">Register</a></span>
+    <% } %>
+</div>
+<div>
+    <header class="ninis-header">Nini's Cakes</header>
+    <p class="ninis-desc">Best Custom Cakes in NYC</p>
+</div>

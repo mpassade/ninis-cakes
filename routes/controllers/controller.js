@@ -1,0 +1,308 @@
+const AWS = require("aws-sdk")
+const nodemailer = require("nodemailer");
+const bcrypt = require('bcryptjs')
+const mailjet = require ('node-mailjet')
+.connect(process.env.MAILJET_API_KEY, process.env.MAILJET_SECRET_KEY)
+const nanoid = require('nanoid').nanoid
+
+const docClient = new AWS.DynamoDB.DocumentClient({
+    httpOptions: {
+        timeout: 5000
+    },
+    maxRetries: 3
+})
+
+module.exports = {
+    home: (req, res) => {
+        const params = {
+            TableName: "niniscakes-cakes"
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                return res.render('main/home', {cakes: data.Items})
+            }
+        })
+    },
+
+    getRegister: (req, res) => {
+        if (req.isAuthenticated()){
+            return res.redirect('/')
+        }
+        return res.render('main/register')
+    },
+
+    register: (req, res) => {
+        const temp = nanoid()
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(temp, salt)
+        const params = {
+            TableName: 'niniscakes-users',
+            Item: {
+                "_id": res.locals.id,
+                "email": req.body.email,
+                "firstName":  req.body.firstName,
+                "lastName": req.body.lastName,
+                "password": hash,
+                "tempPassword": true
+            }
+        }
+        docClient.put(params, (err) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+            
+
+
+
+                mailjet.post("send", {'version': 'v3.1'}).request({
+                    "Messages":[
+                        {
+                            "From": {
+                                "Email": "michael.passade@codeimmersives.com",
+                                "Name": "Nini's Cakes"
+                            },
+                            "To": [
+                                {
+                                    "Email": req.body.email,
+                                    "Name": `${req.body.firstName} ${req.body.lastName}`
+                                }
+                            ],
+                            "Subject": "Welcome to Nini's Cakes!",
+                            "TextPart": "Sign-up Email",
+                            "HTMLPart": `<p>Hi ${req.body.firstName},</p><p>Please click the below link and use the following temporary password to set a new password and complete your registration.</p><p>Temporary Password: ${temp}</p><a href='https://niniscakesnyc.com/set-password/${res.locals.id}'>Complete Registration</a>`,
+                            "CustomID": "AppGettingStartedTest"
+                        }
+                    ]
+                })
+            return res.render('main/registered')
+            }
+        })
+    },
+
+    getSetPwd: (req, res) => {
+        if (req.isAuthenticated()){
+            return res.redirect('/')
+        }
+        const params = {
+            TableName : "niniscakes-users",
+            Key: {
+                '_id': req.params.id
+            }
+        }
+        docClient.get(params, (err, data) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                if (data.Item){
+                    if(data.Item.tempPassword){
+                        return res.render('main/set-password', {user: data.Item})
+                    }
+                }
+                return res.redirect('/')
+            }
+        })
+    },
+
+    setPwd: (req, res) => {
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(req.body.newPass, salt)
+        const params = {
+            TableName: "niniscakes-users",
+            Key: {
+                "_id": req.params.id
+            },
+            UpdateExpression: "set password = :h, tempPassword = :t ",
+            ExpressionAttributeValues: {
+                ":h": hash,
+                ":t": false
+            }
+        }
+        docClient.update(params, (err) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                return res.render('main/pwd-set')
+            }
+        })
+    },
+
+    getLogin: (req, res) => {
+        if (req.isAuthenticated()){
+            return res.redirect('/')
+        }
+        return res.render('main/login')
+    },
+
+    logout: (req, res) => {
+        req.logout()
+        req.session.destroy()
+        return res.redirect('/login')
+    },
+
+    getProfile: (req, res) => {
+        if (req.isAuthenticated()){
+            return res.render('main/profile')
+        }
+        return res.redirect('/')
+    },
+
+    getEdit: (req, res) => {
+        const params = {
+            TableName : "niniscakes-users",
+            Key: {
+                '_id': req.params.id
+            }
+        }
+        docClient.get(params, (err, data) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                if (!data.Item || !req.isAuthenticated() || JSON.stringify(data.Item)!==JSON.stringify(req.user)){
+                    return res.redirect('/')
+                }
+                return res.render('main/edit-profile')
+            }
+        })
+    },
+
+    editProfile: (req, res) => {
+        const { firstName, lastName, email } = req.body
+        const first = req.user.firstName
+        const last = req.user.lastName
+        const oldEmail = req.user.email
+        const params = {
+            TableName: "niniscakes-users",
+            Key: {
+                "_id": req.user._id
+            },
+            UpdateExpression: "set firstName = :f, lastName = :l, email = :e",
+            ExpressionAttributeValues: {
+                ":f": firstName,
+                ":l": lastName,
+                ":e": email
+            }
+        }
+        docClient.update(params, (err) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                if (oldEmail!==email &&
+                    (firstName!==first ||
+                    lastName!==last)){
+                        req.flash('success', 'Name and Email updated')
+                        return res.redirect('/profile')
+                }
+                if (oldEmail===email){
+                        req.flash('success', 'Name updated')
+                        return res.redirect('/profile')
+                }
+                if (oldEmail!==email){
+                        req.flash('success', 'Email updated')
+                        return res.redirect('/profile')
+                }
+            }
+        })
+    },
+
+    getChangePwd: (req, res) => {
+        const params = {
+            TableName : "niniscakes-users",
+            Key: {
+                '_id': req.params.id
+            }
+        }
+        docClient.get(params, (err, data) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                if (!data.Item || !req.isAuthenticated() || JSON.stringify(data.Item)!==JSON.stringify(req.user)){
+                    return res.redirect('/')
+                }
+                return res.render('main/change-password')
+            }
+        })
+    },
+
+    changePwd: (req, res) => {
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(req.body.newPass, salt)
+        const params = {
+            TableName: "niniscakes-users",
+            Key: {
+                "_id": req.params.id
+            },
+            UpdateExpression: "set password = :h",
+            ExpressionAttributeValues: {
+                ":h": hash
+            }
+        }
+        docClient.update(params, (err, data) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                req.flash('success', 'Password changed')
+                return res.redirect('/profile')
+            }
+        })
+    },
+
+    deleteUser: (req, res) => {
+        const params = {
+            TableName: "niniscakes-users",
+            Key: {
+                "_id": req.user._id
+            }
+        }
+        docClient.delete(params, (err) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                req.flash('message', 'Account deleted')
+                return res.redirect('/login')
+            }
+        })
+    },
+
+    contact: (req, res) => {
+        return res.render('main/contact')
+    },
+
+    getQuote: (req, res) => {
+        if (!req.isAuthenticated()){
+            req.flash('message', 'You must login to request a quote')
+            return res.redirect('/login')
+        }
+        return res.render('main/quote')
+    },
+
+    quoteEmail: (req, res) => {
+        const main = async () => {
+            let transporter = nodemailer.createTransport({
+                host: process.env.SMTP_URI,
+                port: process.env.SMTP_PORT,
+                secure: false,
+                auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_SECRET
+                }
+            })
+            let mailOptions = {
+                from: "Nini's Cakes <niniscakesnyc@gmail.com>",
+                to: "niniscakesnyc@gmail.com",
+                subject: "New Request",
+                text: `Hi Lania. A new quote has been requested. Name: ${req.body.name} Email: ${req.body.email} Phone # ${req.body.number} Type: ${req.body.type ? req.body.type : ''} Frosting: ${req.body.frosting ? req.body.frosting : ''} Tiers ${req.body.tiers ? req.body.tiers : ''} Color: ${req.body.color} Theme: ${req.body.theme} Feeds: ${req.body.feeds ? req.body.feeds : ''} Macarons: ${req.body.macarons ? 'Yes' : 'No'} Cookies: ${req.body.cookies ? 'Yes' : 'No'} Cupcakes: ${req.body.cupcakes ? 'Yes' : 'No'} Needed: ${req.body.date} Additional Comments: ${req.body.comments}`,
+                html: `<p>Hi Lania,</p><p>A new quote has been requested:</p><p>Name: ${req.body.name}</p><p>Email: ${req.body.email}</p><p>Phone # ${req.body.number}</p><p>Type: ${req.body.type ? req.body.type : ''}</p><p>Frosting: ${req.body.frosting ? req.body.frosting : ''}</p><p>Tiers ${req.body.tiers ? req.body.tiers : ''}</p><p>Color: ${req.body.color}</p><p>Theme: ${req.body.theme}</p><p>Feeds: ${req.body.feeds ? req.body.feeds : ''}</p><p>Macarons: ${req.body.macarons ? 'Yes' : 'No'}</p><p>Cookies: ${req.body.cookies ? 'Yes' : 'No'}</p><p>Cupcakes: ${req.body.cupcakes ? 'Yes' : 'No'}</p><p>Needed: ${req.body.date}</p><span>Additional Comments:</span><p>${req.body.comments}</p>`,
+            }
+            await transporter.sendMail(mailOptions)
+        }
+        main()
+        .then(() => {
+            return res.render('main/quote-requested')
+        })
+        .catch(err => {
+            return res.send(`Server Error: ${err}`)
+        })
+    }
+}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="account-info">
+        <%- include('../partials/errors') %>
+        <header>Register</header>
+        <form action="/register" method="POST">
+            <div class="form-inputs">
+                <input type="text" class="inputs" name="firstName" placeholder="First Name">
+                <input type="text" class="inputs" name="lastName" placeholder="Last Name">
+                <input type="email" class="inputs" name="email" placeholder="Email Address">
+            </div>
+            <div class="form-btns">
+                <button type="submit">Register</button>
+                <span><a href="/login">Already have an account? Login here</a></span>
+            </div>
+        </form>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>
