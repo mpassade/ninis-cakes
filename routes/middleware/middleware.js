@@ -303,5 +303,30 @@ module.exports = {
                 next()
             }
         })
+    },
+
+    register: (req, res, next) => {
+        const temp = nanoid()
+        res.locals.temp = temp
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(temp, salt)
+        const params = {
+            TableName: 'niniscakes-users',
+            Item: {
+                "_id": res.locals.id,
+                "email": req.body.email,
+                "firstName":  req.body.firstName,
+                "lastName": req.body.lastName,
+                "password": hash,
+                "tempPassword": true
+            }
+        }
+        docClient.put(params, (err) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                next()
+            }
+        })
     }
 }

@@ -1,9 +1,6 @@
 const AWS = require("aws-sdk")
 const nodemailer = require("nodemailer");
 const bcrypt = require('bcryptjs')
-const mailjet = require ('node-mailjet')
-.connect(process.env.MAILJET_API_KEY, process.env.MAILJET_SECRET_KEY)
-const nanoid = require('nanoid').nanoid
 
 const docClient = new AWS.DynamoDB.DocumentClient({
     httpOptions: {
@@ -31,54 +28,6 @@ module.exports = {
             return res.redirect('/')
         }
         return res.render('main/register')
-    },
-
-    register: (req, res) => {
-        const temp = nanoid()
-        const salt = bcrypt.genSaltSync(10)
-        const hash = bcrypt.hashSync(temp, salt)
-        const params = {
-            TableName: 'niniscakes-users',
-            Item: {
-                "_id": res.locals.id,
-                "email": req.body.email,
-                "firstName":  req.body.firstName,
-                "lastName": req.body.lastName,
-                "password": hash,
-                "tempPassword": true
-            }
-        }
-        docClient.put(params, (err) => {
-            if (err) {
-                return res.send(`Server Error: ${err}`)
-            } else {
-            
-
-
-
-                mailjet.post("send", {'version': 'v3.1'}).request({
-                    "Messages":[
-                        {
-                            "From": {
-                                "Email": "michael.passade@codeimmersives.com",
-                                "Name": "Nini's Cakes"
-                            },
-                            "To": [
-                                {
-                                    "Email": req.body.email,
-                                    "Name": `${req.body.firstName} ${req.body.lastName}`
-                                }
-                            ],
-                            "Subject": "Welcome to Nini's Cakes!",
-                            "TextPart": "Sign-up Email",
-                            "HTMLPart": `<p>Hi ${req.body.firstName},</p><p>Please click the below link and use the following temporary password to set a new password and complete your registration.</p><p>Temporary Password: ${temp}</p><a href='https://niniscakesnyc.com/set-password/${res.locals.id}'>Complete Registration</a>`,
-                            "CustomID": "AppGettingStartedTest"
-                        }
-                    ]
-                })
-            return res.render('main/registered')
-            }
-        })
     },
 
     getSetPwd: (req, res) => {
@@ -137,8 +86,9 @@ module.exports = {
 
     logout: (req, res) => {
         req.logout()
-        req.session.destroy()
-        return res.redirect('/login')
+        req.session.destroy(() => {
+            return res.redirect('/') 
+        })
     },
 
     getProfile: (req, res) => {
@@ -259,8 +209,10 @@ module.exports = {
             if (err) {
                 return res.send(`Server Error: ${err}`)
             } else {
-                req.flash('message', 'Account deleted')
-                return res.redirect('/login')
+                req.session.regenerate(() => {
+                    req.flash('message', 'Account deleted')
+                    return res.redirect('/login')
+                })
             }
         })
     },
@@ -300,6 +252,35 @@ module.exports = {
         main()
         .then(() => {
             return res.render('main/quote-requested')
+        })
+        .catch(err => {
+            return res.send(`Server Error: ${err}`)
+        })
+    },
+
+    registerEmail: (req, res) => {
+        const main = async () => {
+            let transporter = nodemailer.createTransport({
+                host: process.env.SMTP_URI,
+                port: process.env.SMTP_PORT,
+                secure: false,
+                auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_SECRET
+                }
+            })
+            let mailOptions = {
+                from: "Nini's Cakes <niniscakesnyc@gmail.com>",
+                to: req.body.email,
+                subject: "Welcome to Nini's Cakes!",
+                text: `Hi ${req.body.firstName},\nPlease click the following link and use the temporary password to set a new password and complete your registration.\nTemporary Password: ${res.locals.temp}\nLink: https://niniscakesnyc.com/set-password/${res.locals.id}`,
+                html: `<p>Hi ${req.body.firstName},</p><p>Please click the below link and use the following temporary password to set a new password and complete your registration.</p><p>Temporary Password: ${res.locals.temp}</p><a href='https://niniscakesnyc.com/set-password/${res.locals.id}'>Complete Registration</a>`,
+            }
+            await transporter.sendMail(mailOptions)
+        }
+        main()
+        .then(() => {
+            return res.render('main/registered')
         })
         .catch(err => {
             return res.send(`Server Error: ${err}`)

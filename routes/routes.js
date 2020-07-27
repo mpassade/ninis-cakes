@@ -4,16 +4,16 @@ const passport = require('passport')
 
 const {
     home, getRegister, getLogin, getSetPwd, logout,
-    getProfile, getEdit, register, setPwd, editProfile,
+    getProfile, getEdit, setPwd, editProfile,
     getChangePwd, changePwd, deleteUser,
-    contact, getQuote, quoteEmail
+    contact, getQuote, quoteEmail, registerEmail
 } = require('./controllers/controller')
 
 const {
     checkRegister, duplicateAccount, checkPwds, checkTemp,
     checkNewPwd, checkLogin, checkEdit, checkPwds2, checkOld,
     checkNewPwd2, checkQuote, createId, verifyUser, createQuoteId,
-    requestQuote
+    requestQuote, register
 } = require('./middleware/middleware')
 
 router.get('/test', quoteEmail)
@@ -33,7 +33,8 @@ router.post(
     checkRegister,
     duplicateAccount,
     createId,
-    register
+    register,
+    registerEmail
 )
 router.post(
     '/login',

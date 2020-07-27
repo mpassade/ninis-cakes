@@ -56,15 +56,15 @@ app.use((req, res, next) => {
     res.locals.success = req.flash('success')
     res.locals.message = req.flash('message')
     res.locals.id = ""
-    res.locals.key = ""
+    res.locals.temp = ""
     next()
 })
 
 app.use('/', router)
 
-// app.listen(port, () => {
-//   console.log(`Listening on port ${port}`)
-// })
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`)
+})
 
-module.exports = app
+// module.exports = app
 
