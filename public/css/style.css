@@ -123,7 +123,7 @@
     width: 25vw;
 }
 .cake-info span {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     padding-top: 4rem;
     padding-left: 2rem;
 }
@@ -532,6 +532,7 @@
         width: 35vw;
     }
     .cake-info span {
+        font-size: 1.2rem;
         padding-top: 2rem;
     }
 }
