@@ -17,7 +17,7 @@ AWS.config.update({
   endpoint: process.env.DYNAMODB_URI
 })
 
-const port = process.env.PORT || 8000
+// const port = process.env.PORT || 8000
 const dynamodb = new AWS.DynamoDB()
 const router = require('./routes/routes.js')
 
@@ -27,7 +27,7 @@ app.set('view engine', 'ejs')
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(express.static(path.join(__dirname, 'public')))
+// app.use(express.static(path.join(__dirname, 'public')))
 app.use(methodOverride('_method'))
 
 app.use(
@@ -62,9 +62,9 @@ app.use((req, res, next) => {
 
 app.use('/', router)
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`Listening on port ${port}`)
+// })
 
-// module.exports = app
+module.exports = app
 
