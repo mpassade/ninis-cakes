@@ -285,5 +285,93 @@ module.exports = {
         .catch(err => {
             return res.send(`Server Error: ${err}`)
         })
-    }
+    },
+
+    getForgot: (req, res) => {
+        if (req.isAuthenticated()){
+            return res.redirect('/')
+        }
+        return res.render('main/forgot-password')
+    },
+
+    sendReset: (req, res) => {
+        const main = async () => {
+            let transporter = nodemailer.createTransport({
+                host: process.env.SMTP_URI,
+                port: process.env.SMTP_PORT,
+                secure: false,
+                auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_SECRET
+                }
+            })
+            let mailOptions = {
+                from: "Nini's Cakes <niniscakesnyc@gmail.com>",
+                to: req.body.email,
+                subject: "Password Reset",
+                text: `Please use the following link and verification code to reset your password:\nVerification Code: ${res.locals.temp}\nLink: https://niniscakesnyc.com/reset-password/${res.locals.id}`,
+                html: `<p>Please use the below link and verification code to reset your password:</p><p>Verification Code: ${res.locals.temp}</p><a href='https://niniscakesnyc.com/reset-password/${res.locals.id}'>Reset Password</a>`,
+            }
+            await transporter.sendMail(mailOptions)
+        }
+        main()
+        .then(() => {
+            req.flash('message', 'A password reset link was just emailed to you')
+            return res.redirect('/login')
+        })
+        .catch(err => {
+            return res.send(`Server Error: ${err}`)
+        })
+    },
+
+    getReset: (req, res) => {
+        if (req.isAuthenticated()){
+            return res.redirect('/')
+        }
+        const params = {
+            TableName : "niniscakes-users",
+            Key: {
+                '_id': req.params.id
+            }
+        }
+        docClient.get(params, (err, data) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                if (data.Item){
+                    if (data.Item.verificationCode){
+                        return res.render('main/reset-password', {user: data.Item})
+                    }
+                }
+                return res.redirect('/')
+            }
+        })
+    },
+
+    resetPwd: (req, res) => {
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(req.body.newPass, salt)
+        const params = {
+            TableName: "niniscakes-users",
+            Key: {
+                "_id": req.params.id
+            },
+            UpdateExpression: "set password = :h, verificationCode = :v",
+            ExpressionAttributeValues: {
+                ":h": hash,
+                ":v": ""
+            }
+        }
+        docClient.update(params, (err) => {
+            if (err) {
+                return res.send(`Server Error: ${err}`)
+            } else {
+                return res.render('main/pwd-set')
+            }
+        })
+    },
+
+    about: (req, res) => {
+        return res.render('main/about')
+    },
 }

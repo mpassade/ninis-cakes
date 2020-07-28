@@ -133,7 +133,17 @@
     margin: auto;
     margin-top: 6rem;
 }
-.account-info header, .contact header {
+.about {
+    width: 70vw;
+    margin: auto;
+    margin-top: 6rem;
+    font-size: 1.4rem;
+}
+.about a {
+    text-decoration: none;
+    color: blue;
+}
+.account-info header, .contact header, .about header {
     font-weight: bold;
     font-size: 2.25rem;
     font-family: cursive;
@@ -153,6 +163,14 @@
     justify-content: space-between;
     margin-top: 1rem;
 }
+.form-btns div {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+.forgot {
+    margin-top: 0.5rem;
+}
 .form-btns button {
     height: 2.1rem;
     width: 7rem;
@@ -161,13 +179,17 @@
     font-size: 1.4rem;
     border: 0.0625rem solid black;
 }
-.edit-btn, .change-pwd-btn, .save-btn, .quote-btn {
+.edit-btn, .change-pwd-btn, .save-btn, .quote-btn, .reset-pwd-btn {
     height: 2.1rem;
     width: 5rem;
     background-color: black;
     color: white;
     font-size: 1.4rem;
     border: 0.0625rem solid black;
+}
+.reset-pwd-btn {
+    font-size: 1.2rem;
+    height: 2rem;
 }
 .change-pwd-btn {
     width: 13rem;
@@ -381,6 +403,12 @@
     }
 }
 @media (max-width: 500px){
+    .about p {
+        font-size: 1.1rem;
+    }
+    .about {
+        width: 85vw;
+    }
     #password-container, .quote, .account-info, .contact {
         width: 95vw;
         margin-top: 5rem;
