@@ -2,43 +2,55 @@
     {
         "name":"Paw Patrol",
         "order": 3,
-        "description":"paw patrol birthday cake for Aubrey",
-        "image":"/images/paw-patrol.png"
+        "description":"Paw Patrol birthday cake for babies/toddlers. Choose for your child's favorite cartoon and surprise them on their special day!",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/paw-patrol.png"
     },
     {
         "name":"Patron",
         "order": 1,
-        "description":"patron birthday cake for Jay",
-        "image":"/images/patron.png"
+        "description":"Patron birthday cake! Comes with 2 small bottles of real patron. Name shaped in macarons!",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/patron.png"
     },
     {
         "name":"Chanel",
         "order": 2,
-        "description":"chanel birthday cake for Princess",
-        "image":"/images/chanel.png"
+        "description":"Chanel birthday cake. Choose your luxuy brand decoration.",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/chanel.png"
     },
     {
         "name":"Nini Bunny",
         "order": 4,
-        "description":"test cake, nini bunny",
-        "image":"/images/nini-bunny.png"
+        "description":"Cute bunny cake for kids. Choose her favorite animal or character for a lovely decoration.",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/nini-bunny.png"
     },
     {
         "name":"Rose",
         "order": 0,
-        "description":"bday cake for nini's friend",
-        "image":"/images/rose.png"
+        "description":"Beautiful 2 tier birthday cake decorated with real flowers. Choose your favorite flower for your lover!",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/rose.png"
     },
     {
         "name":"For You",
-        "order": 5,
-        "description":"bday cake for nini's friend's friend",
-        "image":"/images/for-you.png"
+        "order": 6,
+        "description":"Design your cake with cookies or macarons that spell your name.",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/for-you.png"
     },
     {
         "name":"Nini Rose",
-        "order": 6,
-        "description":"test cake, nini rose",
-        "image":"/images/nini-rose.png"
+        "order": 7,
+        "description":"Buttercream flower cake. Each flower is meticulously handcrafted to give it this realistic look.",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/nini-rose.png"
+    },
+    {
+        "name":"Marry Me",
+        "order": 5,
+        "description":"Planning a proposal? Get a cake along with that ring. Double tier proposal cake for your special day.",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/marry-me.png"
+    },
+    {
+        "name":"Chanel Macarons",
+        "order": 8,
+        "description":"Macarons! Choose your design to match your cake. Great dessert for parties and other gatherings.",
+        "image":"https://mpassade-niniscakes.s3.amazonaws.com/public/images/chanel-macarons.png"
     }
 ]

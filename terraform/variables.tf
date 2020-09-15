@@ -1,0 +1,101 @@
+variable "project" {
+    type = string
+    default = "Ninis Cakes"
+}
+variable "bucket" {
+    type = string
+    default = "mpassade-niniscakes"
+}
+variable "domain" {
+    type = string
+    default = "niniscakesnyc.com"
+}
+variable "zip" {
+    type = string
+    default = "lambda_function.zip"
+}
+variable "role" {
+    type = string
+    default = "niniscakes-executer"
+}
+variable "dynamodb_policy" {
+    type = string
+    default = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
+variable "log_policy" {
+    type = string
+    default = "log-writer"
+}
+variable "mime_types" {
+    type = map(string)
+    default = {
+        zip = "application/zip"
+        css = "text/css"
+        js = "application/javascript"
+        png = "image/png"
+    }
+}
+# variable "cake_items" {
+#     type = list(object({
+#         name = string
+#         order = number
+#         description = string
+#         image = string
+#     }))
+#     default = [
+#         {
+#             name = "Paw Patrol",
+#             order = 3,
+#             description = "Paw Patrol birthday cake for babies/toddlers. Choose for your child's favorite cartoon and surprise them on their special day!",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/paw-patrol.png"
+#         },
+#         {
+#             name = "Patron",
+#             order = 1,
+#             description = "Patron birthday cake! Comes with 2 small bottles of real patron. Name shaped in macarons!",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/patron.png"
+#         },
+#         {
+#             name = "Chanel",
+#             order = 2,
+#             description = "Chanel birthday cake. Choose your luxuy brand decoration.",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/chanel.png"
+#         },
+#         {
+#             name = "Nini Bunny",
+#             order = 4,
+#             description = "Cute bunny cake for kids. Choose her favorite animal or character for a lovely decoration.",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/nini-bunny.png"
+#         },
+#         {
+#             name = "Rose",
+#             order = 0,
+#             description = "Beautiful 2 tier birthday cake decorated with real flowers. Choose your favorite flower for your lover!",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/rose.png"
+#         },
+#         {
+#             name = "For You",
+#             order = 6,
+#             description = "Design your cake with cookies or macarons that spell your name.",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/for-you.png"
+#         },
+#         {
+#             name = "Nini Rose",
+#             order = 7,
+#             description = "Buttercream flower cake. Each flower is meticulously handcrafted to give it this realistic look.",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/nini-rose.png"
+#         },
+#         {
+#             name = "Marry Me",
+#             order = 5,
+#             description = "Planning a proposal? Get a cake along with that ring. Double tier proposal cake for your special day.",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/marry-me.png"
+#         },
+#         {
+#             name = "Chanel Macarons",
+#             order = 8,
+#             description = "Macarons! Choose your design to match your cake. Great dessert for parties and other gatherings.",
+#             image = "https://mpassade-niniscakes.s3.amazonaws.com/public/images/chanel-macarons.png"
+#         }
+#     ]
+# }
