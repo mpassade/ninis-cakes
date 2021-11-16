@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mpassade/ninis-cakes#readme",
   "dependencies": {
-    "aws-sdk": "^2.717.0",
+    "aws-sdk": "^2.814.0",
     "aws-serverless-express": "^3.3.8",
     "bcryptjs": "^2.4.3",
     "connect-dynamodb": "^2.0.4",
